@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 use App\Http\Requests\StoreCurrencyRequest;
 use App\Http\Requests\UpdateCurrencyRequest;
+use App\Repository\Interfaces\CurrencyRepository;
 
 class CurrencyController extends Controller
 {
@@ -15,38 +16,9 @@ class CurrencyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(CurrencyRepository $currencyRepository)
     {
-
-        $response = Http::get('https://api.nbp.pl/api/exchangerates/tables/a?format=json');
-        $rates = $response->json()[0]['rates'];
-
-
-
-        foreach ($rates as $key => $value) {
-
-
-            $currency =  Currency::where('name', $value['code'])->first();
-
-
-            if($currency) {
-                $currency->exchange_rate = $value['mid'];
-                $currency->save();
-
-            }
-            else {
-                $currency = new Currency;
-                $currency->name = $value['code'];
-                $currency->currency_code = $value['code'];
-                $currency->exchange_rate = $value['mid'];
-                $currency->save();
-            }
-
-        }
-
-
-
-
+        $currencyRepository->updateCurrenciesNBP();
     }
 
     /**

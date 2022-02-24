@@ -28,9 +28,13 @@ class Currency extends Model
     protected $keyType = 'string';
 
 
-    public function setIdAttribute($value)
+    protected static function boot()
     {
-        $this->attributes['id'] = Str::uuid();
+        parent::boot();
+
+        static::creating(function ($currency) {
+            $currency->{$currency->getKeyName()} = (string) Str::uuid();
+        });
     }
 
 }
