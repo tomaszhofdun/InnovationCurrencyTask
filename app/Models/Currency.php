@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Log;
 
 class Currency extends Model
 {
@@ -24,4 +26,11 @@ class Currency extends Model
      * @var string
      */
     protected $keyType = 'string';
+
+
+    public function setIdAttribute($value)
+    {
+        $this->attributes['id'] = Str::uuid();
+    }
+
 }
